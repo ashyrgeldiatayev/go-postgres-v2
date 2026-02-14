@@ -39,3 +39,5 @@ bin/
 # Temporary files
 tmp/
 temp/
+# Todo files
+todo.txt
