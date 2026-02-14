@@ -1,5 +1,7 @@
 package internal
 
+import "time"
+
 type Book struct {
 	Author    string `json:"author"`
 	Title     string `json:"title"`
@@ -7,10 +9,10 @@ type Book struct {
 }
 
 type Books struct {
-	ID        int     `json:"id"`
-	Author    *string `json:"author"`
-	Title     *string `json:"title"`
-	Publisher *string `json:"publisher"`
-	CreatedAt *string `json:"created_at"`
-	UpdatedAt *string `json:"updated_at"`
+	ID        int       `json:"id"`
+	Author    string    `json:"author"`
+	Title     string    `json:"title"`
+	Publisher string    `json:"publisher"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

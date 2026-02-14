@@ -22,9 +22,8 @@ func (r *Repository) CreateBook(c *fiber.Ctx) error {
 		})
 	}
 
-	query := `INSERT INTO books (author, title, publisher) VALUES ($1, $2, $3) RETURNING id`
 	var id int
-	err = r.DB.QueryRow(context.Background(), query, book.Author, book.Title, book.Publisher).Scan(&id)
+	err = r.DB.QueryRow(context.Background(), CreateBookQuery, book.Author, book.Title, book.Publisher).Scan(&id)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"error": "Cannot create book",
@@ -40,8 +39,7 @@ func (r *Repository) CreateBook(c *fiber.Ctx) error {
 func (r *Repository) DeleteBook(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	query := `DELETE FROM books WHERE id = $1`
-	commandTag, err := r.DB.Exec(context.Background(), query, id)
+	commandTag, err := r.DB.Exec(context.Background(), DeleteBookQuery, id)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"error": "Cannot delete book",
@@ -60,8 +58,7 @@ func (r *Repository) DeleteBook(c *fiber.Ctx) error {
 }
 
 func (r *Repository) GetBooks(c *fiber.Ctx) error {
-	query := `SELECT id, author, title, publisher, created_at, updated_at FROM books`
-	rows, err := r.DB.Query(context.Background(), query)
+	rows, err := r.DB.Query(context.Background(), GetBooksQuery)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"error": "Cannot get books",
@@ -90,9 +87,8 @@ func (r *Repository) GetBooks(c *fiber.Ctx) error {
 func (r *Repository) GetBookByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	query := `SELECT id, author, title, publisher, created_at, updated_at FROM books WHERE id = $1`
 	var book Books
-	err := r.DB.QueryRow(context.Background(), query, id).Scan(&book.ID, &book.Author, &book.Title, &book.Publisher, &book.CreatedAt, &book.UpdatedAt)
+	err := r.DB.QueryRow(context.Background(), GetBookByIDQuery, id).Scan(&book.ID, &book.Author, &book.Title, &book.Publisher, &book.CreatedAt, &book.UpdatedAt)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return c.Status(404).JSON(fiber.Map{

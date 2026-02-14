@@ -1,0 +1,8 @@
+### 20260214
+- init.go for connections, 
+- controllers.go sql query ayratyn db.go gecirmeli, 
+- postman
+
+
+- jp education system, performance
+- spreadshit first see and do similar analysis
