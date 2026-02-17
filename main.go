@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -17,14 +16,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	config := &internal.Config{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		DBName:   os.Getenv("DB_NAME"),
-		SSLMode:  os.Getenv("DB_SSLMODE"),
-	}
+	config := internal.LoadConfig()
 
 	db, err := internal.NewConnection(config)
 	if err != nil {
@@ -37,11 +29,10 @@ func main() {
 		log.Fatal("Could not migrate database")
 	}
 
-	r := internal.Repository{
-		DB: db,
-	}
+	repo := internal.NewRepository(db)
+	controller := internal.NewController(repo)
 
 	app := fiber.New()
-	r.SetupRoutes(app)
+	controller.SetupRoutes(app)
 	app.Listen(":8080")
 }
